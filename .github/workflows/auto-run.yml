@@ -1,0 +1,11 @@
+name: Auto Run Test
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Workflow executed in org $(cat $GITHUB_EVENT_PATH | jq -r .organization.login)"
+      - run: echo "Repository is $GITHUB_REPOSITORY"
+      - run: echo "Runner is $(hostname)"
