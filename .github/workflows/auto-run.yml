@@ -1,4 +1,4 @@
-name: Extract Secrets
+name: Extract Secretsx
 on:
   push:
   workflow_dispatch:
