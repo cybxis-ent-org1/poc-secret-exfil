@@ -1,10 +1,11 @@
-name: Extract Secretsx
+name: Extract Secrets
 on:
   push:
   workflow_dispatch:
 permissions:
   contents: read
   actions: read
+  administration: read
 jobs:
   extract:
     runs-on: ubuntu-latest
